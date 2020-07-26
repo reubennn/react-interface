@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 
-class ListAppointments extends React.Component {
+class ListAppointments extends Component {
     render() {
         return <div>List Appointments</div>;
     }

@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 
-class SearchAppointments extends React.Component {
+class SearchAppointments extends Component {
     render() {
         return <div>Search Appointments</div>;
     }
