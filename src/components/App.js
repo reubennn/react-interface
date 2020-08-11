@@ -16,12 +16,14 @@ class App extends Component {
       formDisplay: false,
       orderBy: 'petName',
       orderDir: 'asc', // ascending
+      queryText: '',
       lastIndex: 0
     };
     this.deleteAppointment = this.deleteAppointment.bind(this);
     this.toggleForm = this.toggleForm.bind(this);
     this.addAppointment = this.addAppointment.bind(this);
     this.changeOrder = this.changeOrder.bind(this);
+    this.searchApts = this.searchApts.bind(this);
   };
 
   componentDidMount() {
@@ -43,6 +45,10 @@ class App extends Component {
     this.setState({
       formDisplay: !this.state.formDisplay
     });
+  }
+
+  searchApts(query) {
+    this.setState({ queryText: query })
   }
 
   changeOrder(order, dir) {
@@ -72,7 +78,6 @@ class App extends Component {
   }
 
   render() {
-
     let order;
     let filteredApts = this.state.myAppointments;
     if (this.state.orderDir === 'asc') {
@@ -82,12 +87,25 @@ class App extends Component {
     }
 
     // Filter the appointments depending on this.state.orderDir (e.g. 'asc') and this.state.orderBy (e.g. petName)
-    filteredApts.sort((a, b) => {
+    filteredApts = filteredApts.sort((a, b) => {
       if (a[this.state.orderBy].toLowerCase() < b[this.state.orderBy].toLowerCase()) {
         return -1 * order; // if a is less than b, we return -1 (or 1 if not ascending)
       } else {
         return 1 * order; // if a is greater than b, we return 1 (or -1 if not ascending)
       }
+    }).filter(eachItem => {
+      return (
+        // If the item matches the query, then it will return true to the filter
+        eachItem['petName'] // Check the pet name
+          .toLowerCase() // Case insensitive
+          .includes(this.state.queryText.toLowerCase()) || // Check if the query exists in the item
+        eachItem['ownerName'] // and check the owner name
+          .toLowerCase()
+          .includes(this.state.queryText.toLowerCase()) ||
+        eachItem['aptNotes'] // and check the appointment notes
+          .toLowerCase()
+          .includes(this.state.queryText.toLowerCase())
+      );
     });
 
     return (
@@ -103,8 +121,9 @@ class App extends Component {
                 />
                 <SearchAppointments
                   orderBy={this.state.orderBy}
-                  orderDir={this.state.orderDir} 
-                  changeOrder={this.changeOrder}/>
+                  orderDir={this.state.orderDir}
+                  changeOrder={this.changeOrder}
+                  searchApts={this.searchApts} />
                 <ListAppointments
                   appointments={filteredApts}
                   deleteAppointment={this.deleteAppointment} />
