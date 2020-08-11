@@ -21,6 +21,7 @@ class App extends Component {
     this.deleteAppointment = this.deleteAppointment.bind(this);
     this.toggleForm = this.toggleForm.bind(this);
     this.addAppointment = this.addAppointment.bind(this);
+    this.changeOrder = this.changeOrder.bind(this);
   };
 
   componentDidMount() {
@@ -44,10 +45,17 @@ class App extends Component {
     });
   }
 
+  changeOrder(order, dir) {
+    this.setState({
+      orderBy: order,
+      orderDir: dir
+    })
+  }
+
   addAppointment(apt) {
     let tempApts = this.state.myAppointments;
     apt.aptId = this.state.lastIndex;
-    tempApts.unshift(apt);
+    tempApts.unshift(apt); // Adds item to start of array (opposite of push)
     this.setState({
       myAppointments: tempApts,
       lastIndex: this.state.lastIndex + 1
@@ -93,9 +101,10 @@ class App extends Component {
                   toggleForm={this.toggleForm}
                   addAppointment={this.addAppointment}
                 />
-                <SearchAppointments 
-                orderBy={this.state.orderBy}
-                orderDir={this.state.orderDir}/>
+                <SearchAppointments
+                  orderBy={this.state.orderBy}
+                  orderDir={this.state.orderDir} 
+                  changeOrder={this.changeOrder}/>
                 <ListAppointments
                   appointments={filteredApts}
                   deleteAppointment={this.deleteAppointment} />

@@ -42,4 +42,5 @@
 .dropdown-item.active,
 .dropdown-item:active {
   background-color: #a9aeb2;
+  width: 100%;
 }
