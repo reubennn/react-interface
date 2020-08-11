@@ -14,6 +14,8 @@ class App extends Component {
     this.state = {
       myAppointments: [],
       formDisplay: false,
+      orderBy: 'petName',
+      orderDir: 'asc', // ascending
       lastIndex: 0
     };
     this.deleteAppointment = this.deleteAppointment.bind(this);
@@ -62,6 +64,24 @@ class App extends Component {
   }
 
   render() {
+
+    let order;
+    let filteredApts = this.state.myAppointments;
+    if (this.state.orderDir === 'asc') {
+      order = 1;
+    } else {
+      order = -1;
+    }
+
+    // Filter the appointments depending on this.state.orderDir (e.g. 'asc') and this.state.orderBy (e.g. petName)
+    filteredApts.sort((a, b) => {
+      if (a[this.state.orderBy].toLowerCase() < b[this.state.orderBy].toLowerCase()) {
+        return -1 * order; // if a is less than b, we return -1 (or 1 if not ascending)
+      } else {
+        return 1 * order; // if a is greater than b, we return 1 (or -1 if not ascending)
+      }
+    });
+
     return (
       <main className="page bg-white" id="petratings">
         <div className="container">
@@ -73,9 +93,11 @@ class App extends Component {
                   toggleForm={this.toggleForm}
                   addAppointment={this.addAppointment}
                 />
-                <SearchAppointments />
+                <SearchAppointments 
+                orderBy={this.state.orderBy}
+                orderDir={this.state.orderDir}/>
                 <ListAppointments
-                  appointments={this.state.myAppointments}
+                  appointments={filteredApts}
                   deleteAppointment={this.deleteAppointment} />
               </div>
             </div>
